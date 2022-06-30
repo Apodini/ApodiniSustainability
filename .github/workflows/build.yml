@@ -19,4 +19,4 @@ jobs:
     name: Build and Test
     uses: Apodini/.github/.github/workflows/build-and-test.yml@v1
     with:
-      packagename: ApodiniTemplate
+      packagename: ApodiniSustainability

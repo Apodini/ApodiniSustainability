@@ -1,31 +1,50 @@
 // swift-tools-version:5.5
-
-//
-// This source file is part of the Apodini open source project
-// 
-// SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
-//
-// SPDX-License-Identifier: MIT
-//
+// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
-
 let package = Package(
-    name: "ApodiniTemplate",
+    name: "ApodiniSustainability",
     platforms: [
-        .macOS(.v11)
+        .macOS(.v12)
     ],
     products: [
-        .library(name: "ApodiniTemplate", targets: ["ApodiniTemplate"])
+        // Products define the executables and libraries a package produces, and make them visible to other packages.
+        .library(
+            name: "ApodiniSustainability",
+            targets: ["ApodiniSustainability"]),
+        .executable(
+            name: "ApodiniSustainabilityDemo",
+            targets: ["ApodiniSustainabilityDemo"])
+    ],
+    dependencies: [
+        // Dependencies declare other packages that this package depends on.
+        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/Apodini/Apodini.git", .upToNextMinor(from: "0.9.0")),
+        .package(url: "https://github.com/Apodini/ApodiniDocumentExport.git", .upToNextMinor(from: "0.1.0")),
     ],
     targets: [
-        .target(name: "ApodiniTemplate"),
-        .testTarget(
-            name: "ApodiniTemplateTests",
+        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
+        // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .target(
+            name: "ApodiniSustainability",
             dependencies: [
-                .target(name: "ApodiniTemplate")
-            ]
-        )
+                .product(name: "Apodini", package: "Apodini"),
+                .product(name: "ApodiniNetworking", package: "Apodini"),
+                .product(name: "ApodiniDocumentExport", package: "ApodiniDocumentExport")
+            ]),
+        .executableTarget(
+            name: "ApodiniSustainabilityDemo",
+            dependencies: [
+                .product(name: "Apodini", package: "Apodini"),
+                .product(name: "ApodiniREST", package: "Apodini"),
+                .target(name: "ApodiniSustainability")
+            ]),
+        .testTarget(
+            name: "ApodiniSustainabilityTests",
+            dependencies: [
+                .target(name: "ApodiniSustainability"),
+                .product(name: "XCTApodiniNetworking", package: "Apodini")
+            ]),
     ]
 )

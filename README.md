@@ -8,36 +8,62 @@ SPDX-License-Identifier: MIT
 
 -->
 
-## How to use this repository
-### Template
+# Apodini Sustainability
 
-When creating a new repository, make sure to select this repository as a repository template.
+[![Build](https://github.com/Apodini/ApodiniSustainability/actions/workflows/build.yml/badge.svg)](https://github.com/Apodini/ApodiniSustainability/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/Apodini/ApodiniSustainability/branch/develop/graph/badge.svg?token=5MMKMPO5NR)](https://codecov.io/gh/Apodini/ApodiniSustainability)
 
-### Customize the repository
+ApodiniSustainability includes metadata definitions for annotating Apodini web services with additional information to enable sustainability in cloud-native applications and the interface exporter to share the information.
 
-Enter your repository-specific configuration
-- Replace the "Package.swift", "Sources" and "Tests" folder with your Swift Package
-- Enter the correct Swift Package name (currently "ApodiniTemplate") in the build.yml, pull_request.yml and release.yml files.
-- Update the DocC documentation to reflect the name of the new Swift package and adapt the docs and build and test GitHub Actions where the documentation is generated to the updated names to be sure the DocC generation works as expected 
-- Update the README with your information and replace the links to the license with the new repository.
-- Update the status badges to point to the GitHub actions of your repository.
-- If you create a new repository in the Apodini organization, you do not need to add a personal access token named "ACCESS_TOKEN". If you create the repo outside the Apodini organization, you need to create such a token with write access to the repo for all GitHub Actions to work. You will need to give the `ApodiniBot` user write access to the repository.
+## Hello World
 
-### ⬆️ Remove everything up to here ⬆️
+This `HelloWorld` example shows the annotations of the Apodini web service with metadata and includes the `Sustainability` interface exporter in the configuration of the web service.
 
-# Project Name
+```
+struct Greeter: Handler {
+    @Parameter var country: String?
 
-[![Build](https://github.com/Apodini/Template-Repository/actions/workflows/build.yml/badge.svg)](https://github.com/Apodini/Template-Repository/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/Apodini/Template-Repository/branch/develop/graph/badge.svg?token=5MMKMPO5NR)](https://codecov.io/gh/Apodini/Template-Repository)
+    func handle() -> String {
+        "Hello, \(country ?? "World")! 🚀"
+    }
+    
+    var metadata: Metadata {
+        ExecutionModality(.highPerformance)
+        ResponseTime(value: 1)
+        InstanceType(.small)
+    }
+}
 
-## Requirements
+struct GreeterService: Component {
+    
+    var content: some Component {
+        Greeter()
+            .description("Say 'Hello' to a country.")
+    }
+    
+    var metadata: Metadata {
+        Optional()
+        ServiceIdentifier("greeter")
+    }
+}
 
-## Installation/Setup/Integration
+struct HelloWorld: WebService {
+    
+    @OptionGroup
+    var options: SustainabilityDocumentExportOptions
+    
+    var configuration: Configuration {
+        Sustainability(options)
+    }
 
-## Usage
+    var content: some Component {
+        GreeterService()
+    }
+}
+```
 
 ## Contributing
 Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/Apodini/.github/blob/main/CODE_OF_CONDUCT.md) first.
 
 ## License
-This project is licensed under the MIT License. See [Licenses](https://github.com/Apodini/Template-Repository/tree/develop/LICENSES) for more information.
+This project is licensed under the MIT License. See [Licenses](https://github.com/Apodini/ApodiniSustainability/tree/develop/LICENSES) for more information.
